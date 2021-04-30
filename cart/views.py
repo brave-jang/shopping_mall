@@ -5,6 +5,7 @@ from .forms import AddProductForm
 from .cart import Cart
 
 
+@require_POST # Post만 전달 받음
 def add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
