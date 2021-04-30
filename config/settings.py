@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'shop',
     'cart',
     'coupon',
+    'order',
 ]
 
 MIDDLEWARE = [
@@ -180,3 +181,6 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
 CART_ID = 'cart_item'
+
+IAMPORT_KEY = os.environ.get("IAMPORT_KEY")
+IAMPORT_SECRET = os.environ.get("IAMPORT_SECRET")
