@@ -6,5 +6,5 @@ app_name = 'coupon'
 
 
 urlpatterns = [
-    path('add/', add_coupon, name="add"),
+    path('add/', add_coupon, name="add"),\
 ]
