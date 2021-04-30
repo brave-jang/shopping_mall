@@ -39,7 +39,7 @@
                 <form action="{% url 'cart:product_add' product.id %}" method="post">
                   {{ item.quantity_form.quantity }}
                   {{ item.quantity_form.is_update }}
-                  <input type="submit" value="Update">
+                  <input type="submit" class="btn btn-primary" value="Update">
                   {% csrf_token %}
                 </form>
               </td>
@@ -52,10 +52,18 @@
         <tr class="total">
           <td>Total</td>
           <td colspan="4"></td>
-          <td class="num">${{ cart.get_product_total }}</td>
+          <td class="num">${{ cart.get_product_total|floatformat:2 }}</td>
         </tr>
       </tbody>
     </table>
+    <p>
+      Add Coupon
+    </p>
+    <form action="{% url 'coupon:add' %}" method="POST">
+      {% csrf_token %}
+      {{add_coupon}}
+      <input type="submit" value="Add">
+    </form>
     <p class="text-right">
       <a href="{% url 'shop:product_all' %}" class="button light">Continue shopping</a>
     </p>
