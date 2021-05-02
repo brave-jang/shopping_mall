@@ -23,3 +23,9 @@ def order_create(request):
         # 주문자 정보를 입력 받는 페이지
         form = OrderCreateForm()
     return render(request, 'order/create.html', {'cart':cart, 'form':form})
+
+# JS가 동작하지 않는 환경에서도 주문은 가능해야 함.
+def order_complete(request):
+    order_id = request.GET.get('order_id')
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'order/created.html', {'order':order})
