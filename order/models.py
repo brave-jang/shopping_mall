@@ -1,7 +1,10 @@
+import hashlib
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.signals import post_save
 from coupon.models import Coupon
 from shop.models import Product
+from .iamport import payments_prepare, find_transaction
 
 
 class Order(models.Model):
@@ -44,8 +47,6 @@ class OrderItem(models.Model):
         return self.price * self.quantity
 
 
-import hashlib
-from .iamport import payments_prepare, find_transaction
 
 
 class OrderTransactionManager(models.Manager):
@@ -103,16 +104,20 @@ class OrderTransaction(models.Model):
 
 def order_payment_validation(sender, instance, created, *args, **kwargs):
     if instance.transaction_id:
-        iamport_transaction = OrderTransaction.objects.get_transaction(merchant_order_id=instance.merchant_order_id)
-        merchant_order_id = iamport_transaction['merchant_order_id']
-        imp_id = iamport_transaction['imp_id']
-        amount = iamport_transaction['amount']
+        import_transaction = OrderTransaction.objects.get_transaction(merchant_order_id=instance.merchant_order_id)
 
-        local_transaction = OrderTransaction.objects.filter(merchant_order_id=merchant_order_id, transaction_id=imp_id, amount=amount).exists()
+        merchant_order_id = import_transaction['merchant_order_id']
+        imp_id = import_transaction['imp_id']
+        amount = import_transaction['amount']
 
-        if not iamport_transaction or not local_transaction:
-            raise ValueError('비정상 거래입니다.')
+        local_transaction = OrderTransaction.objects.filter(merchant_order_id=merchant_order_id,
+                                                            transaction_id=imp_id,
+                                                            amount=amount
+                                                            ).exists()
 
-from django.db.models.signals import post_save
+        if not import_transaction or not local_transaction:
+            raise ValueError("비정상 거래입니다.")
 
+
+# 결제 정보가 생성된 후에 호출할 함수를 연결해준다.
 post_save.connect(order_payment_validation, sender=OrderTransaction)
