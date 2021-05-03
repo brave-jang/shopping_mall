@@ -42,15 +42,24 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'shop:product_all' %}">Product</a>
             </li>
+            {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'cart:detail' %}">Cart
-                    {% if cart|length > 0 %}
-                        ${{cart.get_product_total}} with {{cart|length}} items
-                    {% else %}
-                        : Empty
-                    {% endif %}
-                </a>
+                <a class="nav-link" href="{% url 'cart:detail' %}">Cart</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://127.0.0.1:8000/accounts/logout/">Logout</a>
+            </li>
+            <li class="nav-item">
+              {{user.username}} 님 어서오세요.
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="http://127.0.0.1:8000/accounts/login/">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://127.0.0.1:8000/accounts/signup/">Signup</a>
+            </li>
+            {% endif %}
           </ul>
           <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
